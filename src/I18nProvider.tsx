@@ -1,6 +1,6 @@
 import React, { createContext, useEffect, useState } from "react";
 
-// Translation files
+// Los archivos de traducción
 import de from "./locale/de.js";
 import en from "./locale/en.js";
 import es from "./locale/es.js";
@@ -15,22 +15,22 @@ interface I18nContextValue {
   t: Translation;
 }
 
-// Create the context
+// Aquí estamos creando el context
 export const I18nContext = createContext<I18nContextValue | null>(null);
 
 const supportedLanguages = ["en", "es", "de"];
 const defaultLanguage = "en";
 
-// The provider
+// Aquí tenemos el provider
 export const I18nProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  // State to store the current language
+  // El estado que guarda el idioma elegido
   const [language, setLanguage] = useState<string>(
     localStorage.getItem("language") || navigator.language.split("-")[0]
   );
 
-  // Load the initial language from the browser or local storage
+  // Cargamos el idioma inicial del navegador o del local storage
   useEffect(() => {
     const browserLang = navigator.language.split("-")[0];
     const storedLang = localStorage.getItem("language");
@@ -44,7 +44,7 @@ export const I18nProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   }, []);
 
-  // Function to change the language
+  // La función que cambia el idioma -> mira el LanguageSelector
   const changeLanguage = (lang: string) => {
     if (supportedLanguages.includes(lang)) {
       setLanguage(lang);
@@ -52,15 +52,15 @@ export const I18nProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   };
 
-  // The translations object
+  // El objeto de las traducciones
   const translations: { [key in string]: Translation } = {
     en,
     es,
     de,
   };
 
-  // The translate method
-  // we're checking if the second argument is a number, and if it is, we're checking if the value has a one or other key based on the value of count. If it does, we use that key to get the correct pluralization string. We're also replacing {count} in the string with the actual count, if it exists.
+  // La magia: el método translate
+  // Aquí miramos si el segundo argumento que se nos pasa es un número, si lo es, miramos si tiene las key one y other con count dentro. Reemplazamos entonces{count} con el número correcto si existe.
   const t = {
     translate: (key: string | number, count?: number) => {
       let keys = key.toString().split(".");
@@ -87,7 +87,7 @@ export const I18nProvider: React.FC<{ children: React.ReactNode }> = ({
     },
   };
 
-  // Render the provider
+  // Renderizamos el provider
   return (
     <I18nContext.Provider value={{ language, changeLanguage, t }}>
       {children}
